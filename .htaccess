@@ -1,0 +1,15 @@
+Options +Indexes +FollowSymLinks +SymLinksIfOwnerMatch
+
+<IfModule mod_rewrite.c>
+
+	# Enable rewriting
+	RewriteEngine On
+
+	# Ignore existing files and directories
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+
+	# Set the rewrites
+	RewriteRule ^(.*)$ /public/index.php?url=$1 [L]
+	RewriteRule ^$ /public/ [L]
+</IfModule>
