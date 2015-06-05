@@ -1,4 +1,12 @@
 propel:
+  general:
+    project: ClanApp
+  paths:
+    schemaDir: ClanApp/configs
+    phpConfDir: ClanApp/propel/generated-conf
+    outputDir: ClanApp/propel
+    migrationDir: ClanApp/propel/generated-migrations
+    sqlDir: ClanApp/propel/generated-sql
   database:
     connections:
       FusionCore:
@@ -16,6 +24,3 @@ propel:
     defaultConnection: FusionCore
     connections:
       - FusionCore
-  paths:
-    phpConfDir: ClanApp/configs
-    schemaDir: ClanApp/configs

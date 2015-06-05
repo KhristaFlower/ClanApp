@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="FusionCore" defaultIdMethod="native" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../developer/database.xsd">
+<database name="FusionCore" namespace="ClanApp\entities" defaultIdMethod="native" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../developer/database.xsd">
 
     <table name="users" phpName="User">
         <column name="id" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
