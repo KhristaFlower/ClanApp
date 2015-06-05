@@ -14,6 +14,11 @@ class Controller {
      */
     private $smarty;
 
+	/**
+	 * @var Sidebar
+	 */
+	private $sidebar;
+
     public function __construct() {
 
         $this->smarty = new \Smarty();
@@ -22,7 +27,11 @@ class Controller {
         $this->smarty->setConfigDir($_SERVER['DOCUMENT_ROOT'] . "/../ClanApp/configs/");
         $this->smarty->setCacheDir($_SERVER['DOCUMENT_ROOT'] . "/../ClanApp/cache/");
 
+		$this->smarty->cache_lifetime = 100;
+
         $this->smarty->debugging = false;
+
+		$this->generateSidebar();
 
     }
 
@@ -31,10 +40,25 @@ class Controller {
     }
 
     public function renderView() {
+
+		if ($this->sidebar) {
+			$this->smarty->assign('sidebar', $this->sidebar->getStructure());
+		}
+
         $controllerName = $this->routerObject->getControllerName();
         $actionName = $this->routerObject->getActionName();
         $displayFile = "pages/$controllerName/$actionName.tpl";
         $this->smarty->display($displayFile);
     }
+
+	public function generateSidebar() {
+
+		$this->sidebar = new Sidebar();
+
+		$this->sidebar->addItem('/', 'Home');
+		$this->sidebar->addItem('/login', 'Log in', 'Accounts');
+		$this->sidebar->addItem('/admin', 'Enter', 'Administration');
+
+	}
 
 }
