@@ -7,6 +7,7 @@ propel:
     outputDir: ClanApp/propel
     migrationDir: ClanApp/propel/generated-migrations
     sqlDir: ClanApp/propel/generated-sql
+    phpDir: . # dot used to define project root. The namespacing will put the files into the correct location.
   database:
     connections:
       FusionCore:
