@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Kriptonic
- * Date: 05/06/2015
- * Time: 23:22
- */
 
-namespace ClanApp;
-
+namespace ClanApp\core;
 
 class Sidebar {
 
@@ -45,7 +38,31 @@ class Sidebar {
 	}
 
 	public function getStructure() {
-		return $this->sidebarItems;
+
+		$structureFlattened = [];
+
+		foreach ($this->sidebarItems as $key => $value) {
+			if (is_string($key)) {
+				// This is an array of links, flatten them.
+				$structureFlattened[] = ['type' => 'heading', 'text' => $key];
+				foreach ($value as $linkDetails) {
+					$structureFlattened[] = [
+						'type' => 'link',
+						'href' => $linkDetails['href'],
+						'text' => $linkDetails['text']
+					];
+				}
+			} else {
+				// This is a normal link, flattening not required.
+				$structureFlattened[] = [
+					'type' => 'link',
+					'href' => $value['href'],
+					'text' => $value['text']
+				];
+			}
+		}
+
+		return $structureFlattened;
 	}
 
 }

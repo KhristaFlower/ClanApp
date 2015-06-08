@@ -2,16 +2,19 @@
 
 namespace ClanApp;
 
+use ClanApp\core\Router;
+
 class ClanApp {
 
-    public function __construct() {
+	public function __construct() {
 
-        $router = new Router();
+		$router = Router::getInstance();
 
-        $controller = $router->getControllerObject();
-        $controller->{$router->getActionName()}();
-        $controller->renderView();
+		$controller = $router->getControllerObject();
+		$controller->preAction();
+		$controller->{$router->getActionName()}();
+		$controller->renderView();
 
-    }
+	}
 
 }
