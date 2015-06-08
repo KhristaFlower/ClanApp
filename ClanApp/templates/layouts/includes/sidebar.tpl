@@ -1,20 +1,11 @@
 <div class="sidebar">
 	<ul>
-		{foreach from=$sidebar key=key item=value}
+		{foreach from=$sidebar item=item}
 			<li>
-				{if $key|@is_string}
-					{* Sub list *}
-					{$key}
-					<ul>
-						{foreach from=$value item=link}
-							<li>
-								<a href="{$link.href}">{$link.text}</a>
-							</li>
-						{/foreach}
-					</ul>
-				{else}
-					{* Plain link *}
-					<a href="{$value.href}">{$value.text}</a>
+				{if $item.type eq 'heading'}
+					<h3>{$item.text}</h3>
+				{elseif $item.type eq 'link'}
+					<a href="{$item.href}">{$item.text}</a>
 				{/if}
 			</li>
 		{/foreach}

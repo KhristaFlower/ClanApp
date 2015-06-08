@@ -2,8 +2,7 @@
 
 namespace ClanApp\controllers;
 
-
-use ClanApp\Controller;
+use ClanApp\core\Controller;
 
 class TaskController extends Controller {
 

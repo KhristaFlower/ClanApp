@@ -1,14 +1,27 @@
-<!doctype html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Clan App</title>
-</head>
-<body>
-	<h1>Clan App</h1>
+{include file="layouts/base.tpl"}
+{block name=base}
+	<header>
+		<div class="container">
+			<h1>Fusion Core <small>Clan App</small></h1>
+		</div>
+	</header>
 
-	{include file="layouts/includes/sidebar.tpl"}
+	<section>
 
-	{block name=body}{/block}
-</body>
-</html>
+		<div class="container">
+			{include file="layouts/includes/sidebar.tpl"}
+			<div class="content">
+				{block name=body}{/block}
+			</div>
+		</div>
+
+		<div class="break"></div>
+
+	</section>
+
+	<footer>
+		<p>
+			The Clan App framework is a tool to manage many aspects of clan administration.
+		</p>
+	</footer>
+{/block}
