@@ -2,3 +2,5 @@ vendor/
 public/resources/
 .idea/
 ClanApp/data/templates_c
+
+tests/_output/*
