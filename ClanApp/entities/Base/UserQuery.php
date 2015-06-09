@@ -21,61 +21,55 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildUserQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildUserQuery orderByUsername($order = Criteria::ASC) Order by the username column
- * @method     ChildUserQuery orderByPassword($order = Criteria::ASC) Order by the password column
  * @method     ChildUserQuery orderByEmail($order = Criteria::ASC) Order by the email column
- * @method     ChildUserQuery orderByGameName($order = Criteria::ASC) Order by the game_name column
- * @method     ChildUserQuery orderByJoinedClanOn($order = Criteria::ASC) Order by the joined_clan_on column
- * @method     ChildUserQuery orderByLeftClanOn($order = Criteria::ASC) Order by the left_clan_on column
+ * @method     ChildUserQuery orderByPassword($order = Criteria::ASC) Order by the password column
+ * @method     ChildUserQuery orderByRememberToken($order = Criteria::ASC) Order by the remember_token column
+ * @method     ChildUserQuery orderByMemberId($order = Criteria::ASC) Order by the member_id column
  *
  * @method     ChildUserQuery groupById() Group by the id column
- * @method     ChildUserQuery groupByUsername() Group by the username column
- * @method     ChildUserQuery groupByPassword() Group by the password column
  * @method     ChildUserQuery groupByEmail() Group by the email column
- * @method     ChildUserQuery groupByGameName() Group by the game_name column
- * @method     ChildUserQuery groupByJoinedClanOn() Group by the joined_clan_on column
- * @method     ChildUserQuery groupByLeftClanOn() Group by the left_clan_on column
+ * @method     ChildUserQuery groupByPassword() Group by the password column
+ * @method     ChildUserQuery groupByRememberToken() Group by the remember_token column
+ * @method     ChildUserQuery groupByMemberId() Group by the member_id column
  *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildUserQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildUserQuery leftJoinMember($relationAlias = null) Adds a LEFT JOIN clause to the query using the Member relation
+ * @method     ChildUserQuery rightJoinMember($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Member relation
+ * @method     ChildUserQuery innerJoinMember($relationAlias = null) Adds a INNER JOIN clause to the query using the Member relation
+ *
  * @method     ChildUserQuery leftJoinUserRole($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRole relation
  * @method     ChildUserQuery rightJoinUserRole($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRole relation
  * @method     ChildUserQuery innerJoinUserRole($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRole relation
  *
- * @method     \ClanApp\entities\UserRoleQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ClanApp\entities\MemberQuery|\ClanApp\entities\UserRoleQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
  *
  * @method     ChildUser findOneById(int $id) Return the first ChildUser filtered by the id column
- * @method     ChildUser findOneByUsername(string $username) Return the first ChildUser filtered by the username column
- * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column
  * @method     ChildUser findOneByEmail(string $email) Return the first ChildUser filtered by the email column
- * @method     ChildUser findOneByGameName(string $game_name) Return the first ChildUser filtered by the game_name column
- * @method     ChildUser findOneByJoinedClanOn(string $joined_clan_on) Return the first ChildUser filtered by the joined_clan_on column
- * @method     ChildUser findOneByLeftClanOn(string $left_clan_on) Return the first ChildUser filtered by the left_clan_on column *
+ * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column
+ * @method     ChildUser findOneByRememberToken(string $remember_token) Return the first ChildUser filtered by the remember_token column
+ * @method     ChildUser findOneByMemberId(int $member_id) Return the first ChildUser filtered by the member_id column *
 
  * @method     ChildUser requirePk($key, ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOne(ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser requireOneById(int $id) Return the first ChildUser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByUsername(string $username) Return the first ChildUser filtered by the username column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByPassword(string $password) Return the first ChildUser filtered by the password column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByEmail(string $email) Return the first ChildUser filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByGameName(string $game_name) Return the first ChildUser filtered by the game_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByJoinedClanOn(string $joined_clan_on) Return the first ChildUser filtered by the joined_clan_on column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByLeftClanOn(string $left_clan_on) Return the first ChildUser filtered by the left_clan_on column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByPassword(string $password) Return the first ChildUser filtered by the password column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByRememberToken(string $remember_token) Return the first ChildUser filtered by the remember_token column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByMemberId(int $member_id) Return the first ChildUser filtered by the member_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @method     ChildUser[]|ObjectCollection findById(int $id) Return ChildUser objects filtered by the id column
- * @method     ChildUser[]|ObjectCollection findByUsername(string $username) Return ChildUser objects filtered by the username column
- * @method     ChildUser[]|ObjectCollection findByPassword(string $password) Return ChildUser objects filtered by the password column
  * @method     ChildUser[]|ObjectCollection findByEmail(string $email) Return ChildUser objects filtered by the email column
- * @method     ChildUser[]|ObjectCollection findByGameName(string $game_name) Return ChildUser objects filtered by the game_name column
- * @method     ChildUser[]|ObjectCollection findByJoinedClanOn(string $joined_clan_on) Return ChildUser objects filtered by the joined_clan_on column
- * @method     ChildUser[]|ObjectCollection findByLeftClanOn(string $left_clan_on) Return ChildUser objects filtered by the left_clan_on column
+ * @method     ChildUser[]|ObjectCollection findByPassword(string $password) Return ChildUser objects filtered by the password column
+ * @method     ChildUser[]|ObjectCollection findByRememberToken(string $remember_token) Return ChildUser objects filtered by the remember_token column
+ * @method     ChildUser[]|ObjectCollection findByMemberId(int $member_id) Return ChildUser objects filtered by the member_id column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -168,7 +162,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, username, password, email, game_name, joined_clan_on, left_clan_on FROM users WHERE id = :p0';
+        $sql = 'SELECT id, email, password, remember_token, member_id FROM users WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -300,32 +294,32 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the username column
+     * Filter the query on the email column
      *
      * Example usage:
      * <code>
-     * $query->filterByUsername('fooValue');   // WHERE username = 'fooValue'
-     * $query->filterByUsername('%fooValue%'); // WHERE username LIKE '%fooValue%'
+     * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+     * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $username The value to use as filter.
+     * @param     string $email The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function filterByUsername($username = null, $comparison = null)
+    public function filterByEmail($email = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($username)) {
+            if (is_array($email)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $username)) {
-                $username = str_replace('*', '%', $username);
+            } elseif (preg_match('/[\%\*]/', $email)) {
+                $email = str_replace('*', '%', $email);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_USERNAME, $username, $comparison);
+        return $this->addUsingAlias(UserTableMap::COL_EMAIL, $email, $comparison);
     }
 
     /**
@@ -358,76 +352,47 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the email column
+     * Filter the query on the remember_token column
      *
      * Example usage:
      * <code>
-     * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
-     * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
+     * $query->filterByRememberToken('fooValue');   // WHERE remember_token = 'fooValue'
+     * $query->filterByRememberToken('%fooValue%'); // WHERE remember_token LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $email The value to use as filter.
+     * @param     string $rememberToken The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function filterByEmail($email = null, $comparison = null)
+    public function filterByRememberToken($rememberToken = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($email)) {
+            if (is_array($rememberToken)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $email)) {
-                $email = str_replace('*', '%', $email);
+            } elseif (preg_match('/[\%\*]/', $rememberToken)) {
+                $rememberToken = str_replace('*', '%', $rememberToken);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_EMAIL, $email, $comparison);
+        return $this->addUsingAlias(UserTableMap::COL_REMEMBER_TOKEN, $rememberToken, $comparison);
     }
 
     /**
-     * Filter the query on the game_name column
+     * Filter the query on the member_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByGameName('fooValue');   // WHERE game_name = 'fooValue'
-     * $query->filterByGameName('%fooValue%'); // WHERE game_name LIKE '%fooValue%'
+     * $query->filterByMemberId(1234); // WHERE member_id = 1234
+     * $query->filterByMemberId(array(12, 34)); // WHERE member_id IN (12, 34)
+     * $query->filterByMemberId(array('min' => 12)); // WHERE member_id > 12
      * </code>
      *
-     * @param     string $gameName The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @see       filterByMember()
      *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByGameName($gameName = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($gameName)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $gameName)) {
-                $gameName = str_replace('*', '%', $gameName);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_GAME_NAME, $gameName, $comparison);
-    }
-
-    /**
-     * Filter the query on the joined_clan_on column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByJoinedClanOn('2011-03-14'); // WHERE joined_clan_on = '2011-03-14'
-     * $query->filterByJoinedClanOn('now'); // WHERE joined_clan_on = '2011-03-14'
-     * $query->filterByJoinedClanOn(array('max' => 'yesterday')); // WHERE joined_clan_on > '2011-03-13'
-     * </code>
-     *
-     * @param     mixed $joinedClanOn The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
+     * @param     mixed $memberId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -435,16 +400,16 @@ abstract class UserQuery extends ModelCriteria
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function filterByJoinedClanOn($joinedClanOn = null, $comparison = null)
+    public function filterByMemberId($memberId = null, $comparison = null)
     {
-        if (is_array($joinedClanOn)) {
+        if (is_array($memberId)) {
             $useMinMax = false;
-            if (isset($joinedClanOn['min'])) {
-                $this->addUsingAlias(UserTableMap::COL_JOINED_CLAN_ON, $joinedClanOn['min'], Criteria::GREATER_EQUAL);
+            if (isset($memberId['min'])) {
+                $this->addUsingAlias(UserTableMap::COL_MEMBER_ID, $memberId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($joinedClanOn['max'])) {
-                $this->addUsingAlias(UserTableMap::COL_JOINED_CLAN_ON, $joinedClanOn['max'], Criteria::LESS_EQUAL);
+            if (isset($memberId['max'])) {
+                $this->addUsingAlias(UserTableMap::COL_MEMBER_ID, $memberId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -455,50 +420,84 @@ abstract class UserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_JOINED_CLAN_ON, $joinedClanOn, $comparison);
+        return $this->addUsingAlias(UserTableMap::COL_MEMBER_ID, $memberId, $comparison);
     }
 
     /**
-     * Filter the query on the left_clan_on column
+     * Filter the query by a related \ClanApp\entities\Member object
      *
-     * Example usage:
-     * <code>
-     * $query->filterByLeftClanOn('2011-03-14'); // WHERE left_clan_on = '2011-03-14'
-     * $query->filterByLeftClanOn('now'); // WHERE left_clan_on = '2011-03-14'
-     * $query->filterByLeftClanOn(array('max' => 'yesterday')); // WHERE left_clan_on > '2011-03-13'
-     * </code>
+     * @param \ClanApp\entities\Member|ObjectCollection $member The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @param     mixed $leftClanOn The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return $this|ChildUserQuery The current query, for fluid interface
+     * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByLeftClanOn($leftClanOn = null, $comparison = null)
+    public function filterByMember($member, $comparison = null)
     {
-        if (is_array($leftClanOn)) {
-            $useMinMax = false;
-            if (isset($leftClanOn['min'])) {
-                $this->addUsingAlias(UserTableMap::COL_LEFT_CLAN_ON, $leftClanOn['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($leftClanOn['max'])) {
-                $this->addUsingAlias(UserTableMap::COL_LEFT_CLAN_ON, $leftClanOn['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
+        if ($member instanceof \ClanApp\entities\Member) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_MEMBER_ID, $member->getId(), $comparison);
+        } elseif ($member instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
+
+            return $this
+                ->addUsingAlias(UserTableMap::COL_MEMBER_ID, $member->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByMember() only accepts arguments of type \ClanApp\entities\Member or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Member relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinMember($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Member');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_LEFT_CLAN_ON, $leftClanOn, $comparison);
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Member');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Member relation Member object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ClanApp\entities\MemberQuery A secondary query class using the current class as primary query
+     */
+    public function useMemberQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinMember($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Member', '\ClanApp\entities\MemberQuery');
     }
 
     /**

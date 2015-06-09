@@ -12,8 +12,8 @@ propel:
     connections:
       FusionCore:
         adapter: mysql
-        classname: Propel\Runtime\Connection\ConnectionWrapper
-        dsn: "mysql:host=localhost;dbname=fusioncore"
+        classname: Propel\Runtime\Connection\DebugPDO
+        dsn: mysql:host=localhost;dbname=fusioncore
         user: homestead
         password: secret
         attributes:

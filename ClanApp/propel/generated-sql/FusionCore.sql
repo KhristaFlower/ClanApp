@@ -12,12 +12,30 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(20) NOT NULL,
-    `password` VARCHAR(60) NOT NULL,
     `email` VARCHAR(255),
-    `game_name` VARCHAR(20) NOT NULL,
-    `joined_clan_on` DATE,
-    `left_clan_on` DATE,
+    `password` VARCHAR(60) NOT NULL,
+    `remember_token` VARCHAR(60),
+    `member_id` INTEGER NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `users_fi_5af046` (`member_id`),
+    CONSTRAINT `users_fk_5af046`
+        FOREIGN KEY (`member_id`)
+        REFERENCES `members` (`id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- members
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `members`;
+
+CREATE TABLE `members`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(20) NOT NULL,
+    `joined_on` DATE,
+    `left_on` DATE,
+    `rank` VARCHAR(30) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

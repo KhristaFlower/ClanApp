@@ -2,15 +2,14 @@
 
 namespace ClanApp\entities\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use ClanApp\entities\Member as ChildMember;
 use ClanApp\entities\MemberQuery as ChildMemberQuery;
 use ClanApp\entities\User as ChildUser;
 use ClanApp\entities\UserQuery as ChildUserQuery;
-use ClanApp\entities\UserRole as ChildUserRole;
-use ClanApp\entities\UserRoleQuery as ChildUserRoleQuery;
-use ClanApp\entities\Map\UserTableMap;
+use ClanApp\entities\Map\MemberTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -23,20 +22,21 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'users' table.
+ * Base class that represents a row from the 'members' table.
  *
  *
  *
 * @package    propel.generator.ClanApp.entities.Base
 */
-abstract class User implements ActiveRecordInterface
+abstract class Member implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\ClanApp\\entities\\Map\\UserTableMap';
+    const TABLE_MAP = '\\ClanApp\\entities\\Map\\MemberTableMap';
 
 
     /**
@@ -72,39 +72,34 @@ abstract class User implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the email field.
+     * The value for the name field.
      * @var        string
      */
-    protected $email;
+    protected $name;
 
     /**
-     * The value for the password field.
+     * The value for the joined_on field.
+     * @var        \DateTime
+     */
+    protected $joined_on;
+
+    /**
+     * The value for the left_on field.
+     * @var        \DateTime
+     */
+    protected $left_on;
+
+    /**
+     * The value for the rank field.
      * @var        string
      */
-    protected $password;
+    protected $rank;
 
     /**
-     * The value for the remember_token field.
-     * @var        string
+     * @var        ObjectCollection|ChildUser[] Collection to store aggregation of ChildUser objects.
      */
-    protected $remember_token;
-
-    /**
-     * The value for the member_id field.
-     * @var        int
-     */
-    protected $member_id;
-
-    /**
-     * @var        ChildMember
-     */
-    protected $aMember;
-
-    /**
-     * @var        ObjectCollection|ChildUserRole[] Collection to store aggregation of ChildUserRole objects.
-     */
-    protected $collUserRoles;
-    protected $collUserRolesPartial;
+    protected $collUsers;
+    protected $collUsersPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -116,12 +111,12 @@ abstract class User implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildUserRole[]
+     * @var ObjectCollection|ChildUser[]
      */
-    protected $userRolesScheduledForDeletion = null;
+    protected $usersScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of ClanApp\entities\Base\User object.
+     * Initializes internal state of ClanApp\entities\Base\Member object.
      */
     public function __construct()
     {
@@ -216,9 +211,9 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>User</code> instance.  If
-     * <code>obj</code> is an instance of <code>User</code>, delegates to
-     * <code>equals(User)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Member</code> instance.  If
+     * <code>obj</code> is an instance of <code>Member</code>, delegates to
+     * <code>equals(Member)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -284,7 +279,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|User The current object, for fluid interface
+     * @return $this|Member The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -348,50 +343,70 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [email] column value.
+     * Get the [name] column value.
      *
      * @return string
      */
-    public function getEmail()
+    public function getName()
     {
-        return $this->email;
+        return $this->name;
     }
 
     /**
-     * Get the [password] column value.
+     * Get the [optionally formatted] temporal [joined_on] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getJoinedOn($format = NULL)
+    {
+        if ($format === null) {
+            return $this->joined_on;
+        } else {
+            return $this->joined_on instanceof \DateTime ? $this->joined_on->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [left_on] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getLeftOn($format = NULL)
+    {
+        if ($format === null) {
+            return $this->left_on;
+        } else {
+            return $this->left_on instanceof \DateTime ? $this->left_on->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [rank] column value.
      *
      * @return string
      */
-    public function getPassword()
+    public function getRank()
     {
-        return $this->password;
-    }
-
-    /**
-     * Get the [remember_token] column value.
-     *
-     * @return string
-     */
-    public function getRememberToken()
-    {
-        return $this->remember_token;
-    }
-
-    /**
-     * Get the [member_id] column value.
-     *
-     * @return int
-     */
-    public function getMemberId()
-    {
-        return $this->member_id;
+        return $this->rank;
     }
 
     /**
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\ClanApp\entities\User The current object (for fluent API support)
+     * @return $this|\ClanApp\entities\Member The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -401,95 +416,91 @@ abstract class User implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[UserTableMap::COL_ID] = true;
+            $this->modifiedColumns[MemberTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [email] column.
+     * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\ClanApp\entities\User The current object (for fluent API support)
+     * @return $this|\ClanApp\entities\Member The current object (for fluent API support)
      */
-    public function setEmail($v)
+    public function setName($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->email !== $v) {
-            $this->email = $v;
-            $this->modifiedColumns[UserTableMap::COL_EMAIL] = true;
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[MemberTableMap::COL_NAME] = true;
         }
 
         return $this;
-    } // setEmail()
+    } // setName()
 
     /**
-     * Set the value of [password] column.
+     * Sets the value of [joined_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\ClanApp\entities\Member The current object (for fluent API support)
+     */
+    public function setJoinedOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->joined_on !== null || $dt !== null) {
+            if ($this->joined_on === null || $dt === null || $dt->format("Y-m-d") !== $this->joined_on->format("Y-m-d")) {
+                $this->joined_on = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[MemberTableMap::COL_JOINED_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setJoinedOn()
+
+    /**
+     * Sets the value of [left_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\ClanApp\entities\Member The current object (for fluent API support)
+     */
+    public function setLeftOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->left_on !== null || $dt !== null) {
+            if ($this->left_on === null || $dt === null || $dt->format("Y-m-d") !== $this->left_on->format("Y-m-d")) {
+                $this->left_on = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[MemberTableMap::COL_LEFT_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setLeftOn()
+
+    /**
+     * Set the value of [rank] column.
      *
      * @param string $v new value
-     * @return $this|\ClanApp\entities\User The current object (for fluent API support)
+     * @return $this|\ClanApp\entities\Member The current object (for fluent API support)
      */
-    public function setPassword($v)
+    public function setRank($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->password !== $v) {
-            $this->password = $v;
-            $this->modifiedColumns[UserTableMap::COL_PASSWORD] = true;
+        if ($this->rank !== $v) {
+            $this->rank = $v;
+            $this->modifiedColumns[MemberTableMap::COL_RANK] = true;
         }
 
         return $this;
-    } // setPassword()
-
-    /**
-     * Set the value of [remember_token] column.
-     *
-     * @param string $v new value
-     * @return $this|\ClanApp\entities\User The current object (for fluent API support)
-     */
-    public function setRememberToken($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->remember_token !== $v) {
-            $this->remember_token = $v;
-            $this->modifiedColumns[UserTableMap::COL_REMEMBER_TOKEN] = true;
-        }
-
-        return $this;
-    } // setRememberToken()
-
-    /**
-     * Set the value of [member_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\ClanApp\entities\User The current object (for fluent API support)
-     */
-    public function setMemberId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->member_id !== $v) {
-            $this->member_id = $v;
-            $this->modifiedColumns[UserTableMap::COL_MEMBER_ID] = true;
-        }
-
-        if ($this->aMember !== null && $this->aMember->getId() !== $v) {
-            $this->aMember = null;
-        }
-
-        return $this;
-    } // setMemberId()
+    } // setRank()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -527,20 +538,26 @@ abstract class User implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MemberTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UserTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->email = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MemberTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserTableMap::translateFieldName('Password', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->password = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MemberTableMap::translateFieldName('JoinedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->joined_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('RememberToken', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->remember_token = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MemberTableMap::translateFieldName('LeftOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->left_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('MemberId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->member_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MemberTableMap::translateFieldName('Rank', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->rank = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -549,10 +566,10 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = MemberTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\ClanApp\\entities\\User'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\ClanApp\\entities\\Member'), 0, $e);
         }
     }
 
@@ -571,9 +588,6 @@ abstract class User implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aMember !== null && $this->member_id !== $this->aMember->getId()) {
-            $this->aMember = null;
-        }
     } // ensureConsistency
 
     /**
@@ -597,13 +611,13 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(MemberTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildUserQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildMemberQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -613,8 +627,7 @@ abstract class User implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aMember = null;
-            $this->collUserRoles = null;
+            $this->collUsers = null;
 
         } // if (deep)
     }
@@ -625,8 +638,8 @@ abstract class User implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see User::setDeleted()
-     * @see User::isDeleted()
+     * @see Member::setDeleted()
+     * @see Member::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -635,11 +648,11 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MemberTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildUserQuery::create()
+            $deleteQuery = ChildMemberQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -670,7 +683,7 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MemberTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -689,7 +702,7 @@ abstract class User implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                UserTableMap::addInstanceToPool($this);
+                MemberTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -715,18 +728,6 @@ abstract class User implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aMember !== null) {
-                if ($this->aMember->isModified() || $this->aMember->isNew()) {
-                    $affectedRows += $this->aMember->save($con);
-                }
-                $this->setMember($this->aMember);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -738,17 +739,17 @@ abstract class User implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->userRolesScheduledForDeletion !== null) {
-                if (!$this->userRolesScheduledForDeletion->isEmpty()) {
-                    \ClanApp\entities\UserRoleQuery::create()
-                        ->filterByPrimaryKeys($this->userRolesScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->usersScheduledForDeletion !== null) {
+                if (!$this->usersScheduledForDeletion->isEmpty()) {
+                    \ClanApp\entities\UserQuery::create()
+                        ->filterByPrimaryKeys($this->usersScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->userRolesScheduledForDeletion = null;
+                    $this->usersScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collUserRoles !== null) {
-                foreach ($this->collUserRoles as $referrerFK) {
+            if ($this->collUsers !== null) {
+                foreach ($this->collUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -775,30 +776,30 @@ abstract class User implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[UserTableMap::COL_ID] = true;
+        $this->modifiedColumns[MemberTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MemberTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
+        if ($this->isColumnModified(MemberTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(UserTableMap::COL_EMAIL)) {
-            $modifiedColumns[':p' . $index++]  = 'email';
+        if ($this->isColumnModified(MemberTableMap::COL_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $modifiedColumns[':p' . $index++]  = 'password';
+        if ($this->isColumnModified(MemberTableMap::COL_JOINED_ON)) {
+            $modifiedColumns[':p' . $index++]  = 'joined_on';
         }
-        if ($this->isColumnModified(UserTableMap::COL_REMEMBER_TOKEN)) {
-            $modifiedColumns[':p' . $index++]  = 'remember_token';
+        if ($this->isColumnModified(MemberTableMap::COL_LEFT_ON)) {
+            $modifiedColumns[':p' . $index++]  = 'left_on';
         }
-        if ($this->isColumnModified(UserTableMap::COL_MEMBER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'member_id';
+        if ($this->isColumnModified(MemberTableMap::COL_RANK)) {
+            $modifiedColumns[':p' . $index++]  = 'rank';
         }
 
         $sql = sprintf(
-            'INSERT INTO users (%s) VALUES (%s)',
+            'INSERT INTO members (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -810,17 +811,17 @@ abstract class User implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'email':
-                        $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
+                    case 'name':
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'password':
-                        $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
+                    case 'joined_on':
+                        $stmt->bindValue($identifier, $this->joined_on ? $this->joined_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'remember_token':
-                        $stmt->bindValue($identifier, $this->remember_token, PDO::PARAM_STR);
+                    case 'left_on':
+                        $stmt->bindValue($identifier, $this->left_on ? $this->left_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'member_id':
-                        $stmt->bindValue($identifier, $this->member_id, PDO::PARAM_INT);
+                    case 'rank':
+                        $stmt->bindValue($identifier, $this->rank, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -868,7 +869,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MemberTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -888,16 +889,16 @@ abstract class User implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getEmail();
+                return $this->getName();
                 break;
             case 2:
-                return $this->getPassword();
+                return $this->getJoinedOn();
                 break;
             case 3:
-                return $this->getRememberToken();
+                return $this->getLeftOn();
                 break;
             case 4:
-                return $this->getMemberId();
+                return $this->getRank();
                 break;
             default:
                 return null;
@@ -923,53 +924,52 @@ abstract class User implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['User'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Member'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['User'][$this->hashCode()] = true;
-        $keys = UserTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Member'][$this->hashCode()] = true;
+        $keys = MemberTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getEmail(),
-            $keys[2] => $this->getPassword(),
-            $keys[3] => $this->getRememberToken(),
-            $keys[4] => $this->getMemberId(),
+            $keys[1] => $this->getName(),
+            $keys[2] => $this->getJoinedOn(),
+            $keys[3] => $this->getLeftOn(),
+            $keys[4] => $this->getRank(),
         );
+
+        $utc = new \DateTimeZone('utc');
+        if ($result[$keys[2]] instanceof \DateTime) {
+            // When changing timezone we don't want to change existing instances
+            $dateTime = clone $result[$keys[2]];
+            $result[$keys[2]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        }
+
+        if ($result[$keys[3]] instanceof \DateTime) {
+            // When changing timezone we don't want to change existing instances
+            $dateTime = clone $result[$keys[3]];
+            $result[$keys[3]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aMember) {
+            if (null !== $this->collUsers) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'member';
+                        $key = 'users';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'members';
+                        $key = 'userss';
                         break;
                     default:
-                        $key = 'Member';
+                        $key = 'Users';
                 }
 
-                $result[$key] = $this->aMember->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->collUserRoles) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'userRoles';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'user_roless';
-                        break;
-                    default:
-                        $key = 'UserRoles';
-                }
-
-                $result[$key] = $this->collUserRoles->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -985,11 +985,11 @@ abstract class User implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\ClanApp\entities\User
+     * @return $this|\ClanApp\entities\Member
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MemberTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1000,7 +1000,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\ClanApp\entities\User
+     * @return $this|\ClanApp\entities\Member
      */
     public function setByPosition($pos, $value)
     {
@@ -1009,16 +1009,16 @@ abstract class User implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setEmail($value);
+                $this->setName($value);
                 break;
             case 2:
-                $this->setPassword($value);
+                $this->setJoinedOn($value);
                 break;
             case 3:
-                $this->setRememberToken($value);
+                $this->setLeftOn($value);
                 break;
             case 4:
-                $this->setMemberId($value);
+                $this->setRank($value);
                 break;
         } // switch()
 
@@ -1044,22 +1044,22 @@ abstract class User implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = UserTableMap::getFieldNames($keyType);
+        $keys = MemberTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setEmail($arr[$keys[1]]);
+            $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPassword($arr[$keys[2]]);
+            $this->setJoinedOn($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setRememberToken($arr[$keys[3]]);
+            $this->setLeftOn($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setMemberId($arr[$keys[4]]);
+            $this->setRank($arr[$keys[4]]);
         }
     }
 
@@ -1080,7 +1080,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\ClanApp\entities\User The current object, for fluid interface
+     * @return $this|\ClanApp\entities\Member The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1100,22 +1100,22 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(UserTableMap::DATABASE_NAME);
+        $criteria = new Criteria(MemberTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
-            $criteria->add(UserTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(MemberTableMap::COL_ID)) {
+            $criteria->add(MemberTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(UserTableMap::COL_EMAIL)) {
-            $criteria->add(UserTableMap::COL_EMAIL, $this->email);
+        if ($this->isColumnModified(MemberTableMap::COL_NAME)) {
+            $criteria->add(MemberTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $criteria->add(UserTableMap::COL_PASSWORD, $this->password);
+        if ($this->isColumnModified(MemberTableMap::COL_JOINED_ON)) {
+            $criteria->add(MemberTableMap::COL_JOINED_ON, $this->joined_on);
         }
-        if ($this->isColumnModified(UserTableMap::COL_REMEMBER_TOKEN)) {
-            $criteria->add(UserTableMap::COL_REMEMBER_TOKEN, $this->remember_token);
+        if ($this->isColumnModified(MemberTableMap::COL_LEFT_ON)) {
+            $criteria->add(MemberTableMap::COL_LEFT_ON, $this->left_on);
         }
-        if ($this->isColumnModified(UserTableMap::COL_MEMBER_ID)) {
-            $criteria->add(UserTableMap::COL_MEMBER_ID, $this->member_id);
+        if ($this->isColumnModified(MemberTableMap::COL_RANK)) {
+            $criteria->add(MemberTableMap::COL_RANK, $this->rank);
         }
 
         return $criteria;
@@ -1133,8 +1133,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildUserQuery::create();
-        $criteria->add(UserTableMap::COL_ID, $this->id);
+        $criteria = ChildMemberQuery::create();
+        $criteria->add(MemberTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1196,26 +1196,26 @@ abstract class User implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \ClanApp\entities\User (or compatible) type.
+     * @param      object $copyObj An object of \ClanApp\entities\Member (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setEmail($this->getEmail());
-        $copyObj->setPassword($this->getPassword());
-        $copyObj->setRememberToken($this->getRememberToken());
-        $copyObj->setMemberId($this->getMemberId());
+        $copyObj->setName($this->getName());
+        $copyObj->setJoinedOn($this->getJoinedOn());
+        $copyObj->setLeftOn($this->getLeftOn());
+        $copyObj->setRank($this->getRank());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getUserRoles() as $relObj) {
+            foreach ($this->getUsers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addUserRole($relObj->copy($deepCopy));
+                    $copyObj->addUser($relObj->copy($deepCopy));
                 }
             }
 
@@ -1236,7 +1236,7 @@ abstract class User implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \ClanApp\entities\User Clone of current object.
+     * @return \ClanApp\entities\Member Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1247,57 +1247,6 @@ abstract class User implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
-    }
-
-    /**
-     * Declares an association between this object and a ChildMember object.
-     *
-     * @param  ChildMember $v
-     * @return $this|\ClanApp\entities\User The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setMember(ChildMember $v = null)
-    {
-        if ($v === null) {
-            $this->setMemberId(NULL);
-        } else {
-            $this->setMemberId($v->getId());
-        }
-
-        $this->aMember = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildMember object, it will not be re-added.
-        if ($v !== null) {
-            $v->addUser($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildMember object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildMember The associated ChildMember object.
-     * @throws PropelException
-     */
-    public function getMember(ConnectionInterface $con = null)
-    {
-        if ($this->aMember === null && ($this->member_id !== null)) {
-            $this->aMember = ChildMemberQuery::create()->findPk($this->member_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aMember->addUsers($this);
-             */
-        }
-
-        return $this->aMember;
     }
 
 
@@ -1311,37 +1260,37 @@ abstract class User implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('UserRole' == $relationName) {
-            return $this->initUserRoles();
+        if ('User' == $relationName) {
+            return $this->initUsers();
         }
     }
 
     /**
-     * Clears out the collUserRoles collection
+     * Clears out the collUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addUserRoles()
+     * @see        addUsers()
      */
-    public function clearUserRoles()
+    public function clearUsers()
     {
-        $this->collUserRoles = null; // important to set this to NULL since that means it is uninitialized
+        $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collUserRoles collection loaded partially.
+     * Reset is the collUsers collection loaded partially.
      */
-    public function resetPartialUserRoles($v = true)
+    public function resetPartialUsers($v = true)
     {
-        $this->collUserRolesPartial = $v;
+        $this->collUsersPartial = $v;
     }
 
     /**
-     * Initializes the collUserRoles collection.
+     * Initializes the collUsers collection.
      *
-     * By default this just sets the collUserRoles collection to an empty array (like clearcollUserRoles());
+     * By default this just sets the collUsers collection to an empty array (like clearcollUsers());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1350,213 +1299,188 @@ abstract class User implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initUserRoles($overrideExisting = true)
+    public function initUsers($overrideExisting = true)
     {
-        if (null !== $this->collUserRoles && !$overrideExisting) {
+        if (null !== $this->collUsers && !$overrideExisting) {
             return;
         }
-        $this->collUserRoles = new ObjectCollection();
-        $this->collUserRoles->setModel('\ClanApp\entities\UserRole');
+        $this->collUsers = new ObjectCollection();
+        $this->collUsers->setModel('\ClanApp\entities\User');
     }
 
     /**
-     * Gets an array of ChildUserRole objects which contain a foreign key that references this object.
+     * Gets an array of ChildUser objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
+     * If this ChildMember is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildUserRole[] List of ChildUserRole objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      * @throws PropelException
      */
-    public function getUserRoles(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserRolesPartial && !$this->isNew();
-        if (null === $this->collUserRoles || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collUserRoles) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
                 // return empty collection
-                $this->initUserRoles();
+                $this->initUsers();
             } else {
-                $collUserRoles = ChildUserRoleQuery::create(null, $criteria)
-                    ->filterByUser($this)
+                $collUsers = ChildUserQuery::create(null, $criteria)
+                    ->filterByMember($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collUserRolesPartial && count($collUserRoles)) {
-                        $this->initUserRoles(false);
+                    if (false !== $this->collUsersPartial && count($collUsers)) {
+                        $this->initUsers(false);
 
-                        foreach ($collUserRoles as $obj) {
-                            if (false == $this->collUserRoles->contains($obj)) {
-                                $this->collUserRoles->append($obj);
+                        foreach ($collUsers as $obj) {
+                            if (false == $this->collUsers->contains($obj)) {
+                                $this->collUsers->append($obj);
                             }
                         }
 
-                        $this->collUserRolesPartial = true;
+                        $this->collUsersPartial = true;
                     }
 
-                    return $collUserRoles;
+                    return $collUsers;
                 }
 
-                if ($partial && $this->collUserRoles) {
-                    foreach ($this->collUserRoles as $obj) {
+                if ($partial && $this->collUsers) {
+                    foreach ($this->collUsers as $obj) {
                         if ($obj->isNew()) {
-                            $collUserRoles[] = $obj;
+                            $collUsers[] = $obj;
                         }
                     }
                 }
 
-                $this->collUserRoles = $collUserRoles;
-                $this->collUserRolesPartial = false;
+                $this->collUsers = $collUsers;
+                $this->collUsersPartial = false;
             }
         }
 
-        return $this->collUserRoles;
+        return $this->collUsers;
     }
 
     /**
-     * Sets a collection of ChildUserRole objects related by a one-to-many relationship
+     * Sets a collection of ChildUser objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $userRoles A Propel collection.
+     * @param      Collection $users A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @return $this|ChildMember The current object (for fluent API support)
      */
-    public function setUserRoles(Collection $userRoles, ConnectionInterface $con = null)
+    public function setUsers(Collection $users, ConnectionInterface $con = null)
     {
-        /** @var ChildUserRole[] $userRolesToDelete */
-        $userRolesToDelete = $this->getUserRoles(new Criteria(), $con)->diff($userRoles);
+        /** @var ChildUser[] $usersToDelete */
+        $usersToDelete = $this->getUsers(new Criteria(), $con)->diff($users);
 
 
-        $this->userRolesScheduledForDeletion = $userRolesToDelete;
+        $this->usersScheduledForDeletion = $usersToDelete;
 
-        foreach ($userRolesToDelete as $userRoleRemoved) {
-            $userRoleRemoved->setUser(null);
+        foreach ($usersToDelete as $userRemoved) {
+            $userRemoved->setMember(null);
         }
 
-        $this->collUserRoles = null;
-        foreach ($userRoles as $userRole) {
-            $this->addUserRole($userRole);
+        $this->collUsers = null;
+        foreach ($users as $user) {
+            $this->addUser($user);
         }
 
-        $this->collUserRoles = $userRoles;
-        $this->collUserRolesPartial = false;
+        $this->collUsers = $users;
+        $this->collUsersPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related UserRole objects.
+     * Returns the number of related User objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related UserRole objects.
+     * @return int             Count of related User objects.
      * @throws PropelException
      */
-    public function countUserRoles(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserRolesPartial && !$this->isNew();
-        if (null === $this->collUserRoles || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collUserRoles) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getUserRoles());
+                return count($this->getUsers());
             }
 
-            $query = ChildUserRoleQuery::create(null, $criteria);
+            $query = ChildUserQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByUser($this)
+                ->filterByMember($this)
                 ->count($con);
         }
 
-        return count($this->collUserRoles);
+        return count($this->collUsers);
     }
 
     /**
-     * Method called to associate a ChildUserRole object to this object
-     * through the ChildUserRole foreign key attribute.
+     * Method called to associate a ChildUser object to this object
+     * through the ChildUser foreign key attribute.
      *
-     * @param  ChildUserRole $l ChildUserRole
-     * @return $this|\ClanApp\entities\User The current object (for fluent API support)
+     * @param  ChildUser $l ChildUser
+     * @return $this|\ClanApp\entities\Member The current object (for fluent API support)
      */
-    public function addUserRole(ChildUserRole $l)
+    public function addUser(ChildUser $l)
     {
-        if ($this->collUserRoles === null) {
-            $this->initUserRoles();
-            $this->collUserRolesPartial = true;
+        if ($this->collUsers === null) {
+            $this->initUsers();
+            $this->collUsersPartial = true;
         }
 
-        if (!$this->collUserRoles->contains($l)) {
-            $this->doAddUserRole($l);
+        if (!$this->collUsers->contains($l)) {
+            $this->doAddUser($l);
         }
 
         return $this;
     }
 
     /**
-     * @param ChildUserRole $userRole The ChildUserRole object to add.
+     * @param ChildUser $user The ChildUser object to add.
      */
-    protected function doAddUserRole(ChildUserRole $userRole)
+    protected function doAddUser(ChildUser $user)
     {
-        $this->collUserRoles[]= $userRole;
-        $userRole->setUser($this);
+        $this->collUsers[]= $user;
+        $user->setMember($this);
     }
 
     /**
-     * @param  ChildUserRole $userRole The ChildUserRole object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @param  ChildUser $user The ChildUser object to remove.
+     * @return $this|ChildMember The current object (for fluent API support)
      */
-    public function removeUserRole(ChildUserRole $userRole)
+    public function removeUser(ChildUser $user)
     {
-        if ($this->getUserRoles()->contains($userRole)) {
-            $pos = $this->collUserRoles->search($userRole);
-            $this->collUserRoles->remove($pos);
-            if (null === $this->userRolesScheduledForDeletion) {
-                $this->userRolesScheduledForDeletion = clone $this->collUserRoles;
-                $this->userRolesScheduledForDeletion->clear();
+        if ($this->getUsers()->contains($user)) {
+            $pos = $this->collUsers->search($user);
+            $this->collUsers->remove($pos);
+            if (null === $this->usersScheduledForDeletion) {
+                $this->usersScheduledForDeletion = clone $this->collUsers;
+                $this->usersScheduledForDeletion->clear();
             }
-            $this->userRolesScheduledForDeletion[]= clone $userRole;
-            $userRole->setUser(null);
+            $this->usersScheduledForDeletion[]= clone $user;
+            $user->setMember(null);
         }
 
         return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this User is new, it will return
-     * an empty collection; or if this User has previously
-     * been saved, it will retrieve related UserRoles from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in User.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildUserRole[] List of ChildUserRole objects
-     */
-    public function getUserRolesJoinRole(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildUserRoleQuery::create(null, $criteria);
-        $query->joinWith('Role', $joinBehavior);
-
-        return $this->getUserRoles($query, $con);
     }
 
     /**
@@ -1566,14 +1490,11 @@ abstract class User implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aMember) {
-            $this->aMember->removeUser($this);
-        }
         $this->id = null;
-        $this->email = null;
-        $this->password = null;
-        $this->remember_token = null;
-        $this->member_id = null;
+        $this->name = null;
+        $this->joined_on = null;
+        $this->left_on = null;
+        $this->rank = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1592,15 +1513,14 @@ abstract class User implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collUserRoles) {
-                foreach ($this->collUserRoles as $o) {
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collUserRoles = null;
-        $this->aMember = null;
+        $this->collUsers = null;
     }
 
     /**
@@ -1610,7 +1530,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(UserTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(MemberTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

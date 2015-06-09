@@ -3,7 +3,7 @@
 namespace ClanApp\configs;
 
 
-class Config {
+class AppConfig {
 
 	public $clanName = 'Fusion Core';
 

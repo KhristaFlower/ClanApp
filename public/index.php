@@ -19,6 +19,7 @@ function dieDumpJSON(...$arguments) {
 }
 
 require_once '../vendor/autoload.php';
+require_once '../ClanApp/propel/generated-conf/config.php';
 
 $whoops = new \Whoops\Run();
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
