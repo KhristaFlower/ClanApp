@@ -13,7 +13,7 @@ class Router {
 	public $path;
 
 	/** @var string The name of the controller extracted from the URL. */
-    public $controller;
+	public $controller;
 
 	/** @var string The method to call on the controller based on the URL. */
 	public $action;
@@ -31,9 +31,9 @@ class Router {
 	 */
 	public $controllerClassAction; // Used for Unit tests.
 
-    private function __construct() {
+	private function __construct() {
 
-    }
+	}
 
 	/**
 	 * This function takes a URL route and uses it to determine the controller (and its location)
