@@ -10,9 +10,14 @@ class ClanApp {
 
 		$router = Router::getInstance();
 
-		$controller = $router->getControllerObject();
+		$router->processRoute($_SERVER['REQUEST_URI']);
+
+		/** @var \ClanApp\core\Controller $controller */
+		$controller = new $router->controllerClass();
+		$controller->setRouter($router);
+
 		$controller->preAction();
-		$controller->{$router->getActionName()}();
+		$controller->{$router->action}();
 		$controller->renderView();
 
 	}

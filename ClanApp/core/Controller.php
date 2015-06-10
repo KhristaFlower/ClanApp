@@ -57,8 +57,8 @@ class Controller {
 			$this->smarty->assign('sidebar', $this->sidebar->getStructure());
 		}
 
-		$controllerName = $this->router->getControllerName();
-		$actionName = $this->router->getActionName();
+		$controllerName = $this->router->controller;
+		$actionName = $this->router->action;
 		$displayFile = "pages/$controllerName/$actionName.tpl";
 		$this->smarty->display($displayFile);
 	}
