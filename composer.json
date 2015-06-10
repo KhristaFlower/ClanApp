@@ -2,7 +2,9 @@
   "require": {
     "propel/propel": "~2.0@dev",
     "smarty/smarty": "3.1.*",
-    "codeception/codeception": "*"
+    "codeception/codeception": "*",
+    "codeception/specify": "*",
+    "codeception/verify": "*"
   },
   "require-dev": {
     "filp/whoops": "*"
