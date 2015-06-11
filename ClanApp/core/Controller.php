@@ -59,7 +59,8 @@ class Controller {
 
 		$controllerName = $this->router->controller;
 		$actionName = $this->router->action;
-		$displayFile = "pages/$controllerName/$actionName.tpl";
+		$path = $this->router->path . '/';
+		$displayFile = "pages/{$path}{$controllerName}/{$actionName}.tpl";
 		$this->smarty->display($displayFile);
 	}
 

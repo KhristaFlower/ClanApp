@@ -21,7 +21,7 @@ class RouterTest extends \Codeception\TestCase\Test
 		$router = \ClanApp\core\Router::getInstance();
 
 		foreach ($tests as $route => $controller) {
-			$this->assertSame($controller, $router->processRoute($route)->controllerClassAction);
+			$this->assertSame($controller, $router->processRoute($route)->controllerClassAction, "Route: $route");
 		}
 
     }

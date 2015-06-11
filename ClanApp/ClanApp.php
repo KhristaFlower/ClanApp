@@ -10,7 +10,7 @@ class ClanApp {
 
 		$router = Router::getInstance();
 
-		$router->processRoute($_SERVER['REQUEST_URI']);
+		$router->processRoute(explode('?', $_SERVER['REQUEST_URI'])[0]);
 
 		/** @var \ClanApp\core\Controller $controller */
 		$controller = new $router->controllerClass();

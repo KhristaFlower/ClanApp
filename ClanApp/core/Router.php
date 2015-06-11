@@ -45,77 +45,44 @@ class Router {
 	 */
 	public function processRoute($route) {
 
-		// Separate the query string (if one) from the input.
-		$url = explode('?', $route)[0];
+		// Used to remove the query string as we don't need it to calculate the controller.
+		$route = explode('?', $route)[0];
 
-		/*
-		 * The controller and action we need to call can be found in the URL, unfortunately due
-		 * to readability, we aren't using a static format. I wanted to be able to place controllers
-		 * at any location inside the controllers folder and have the router take that into
-		 * consideration. Because of this we need to try a bunch of different known possibilities
-		 * to calculate what we need.
-		 *
-		 * Take the following example: /manage/members/view
-		 * The controller in the example would be the MembersController found at /controllers/manage/
-		 * and view would be the method. However, this could just as easily be the ViewController
-		 * found at /controllers/manage/members/ using the default (index) method. The last part of
-		 * the URL is either going to be an action or a controller (using the default index action).
-		 */
-
-		if ($url == '/') {
-			$url = '/home';
+		if ($route == '/') {
+			$route = '/home';
 		}
 
-		$routeParts = explode('/', trim($url, '/'));
+		$routeParts = explode('/', trim($route, '/'));
 
-		$path = null;
-		$controller = null;
-		$action = null;
+		if (count($routeParts) == 1) {
+			$routeParts[] = 'index';
+		}
 
-		/*
-		 * TODO: The below.
-		 * Refine the part checking for 1 $routePart, we should be able to incorporate this into the general
-		 * solution below. Failing that we could just add an index item to the $routeParts if it only has 1 item.
-		 * It shouldn't break anything.
-		 */
-		if (count($routeParts) == 1) { // TODO: Refine.
-			// The specified URL component will be a controller.
-			$controller = $routeParts[0];
-			$action = 'index';
-			if (!self::validRoute(null, $controller, $action)) {
-				throw new \Exception('404');
-			}
+		$lastComponent = array_pop($routeParts); // Either controller or view.
+		$secondLastComponent = array_pop($routeParts); // Either path or controller.
+		// Anything left over at this point will form part of the path.
+		$controllerPath = implode('/', $routeParts);
+
+		// The two end URL components will either be folder/controller or controller/action.
+		$validControllerView = self::isValidRoute($controllerPath, $secondLastComponent, $lastComponent);
+		$validFolderController = self::isValidRoute(implode('/', [$controllerPath, $secondLastComponent]), $lastComponent);
+
+		if ($validControllerView) {
+			$this->path = $controllerPath;
+			$this->controller = $secondLastComponent;
+			$this->action = $lastComponent;
+		} else if ($validFolderController) {
+			$this->path = implode('/', array_filter([$controllerPath, $secondLastComponent]));
+			$this->controller = $lastComponent;
+			$this->action = "index";
 		} else {
-			// A destructible copy of the URL components array.
-			$components = $routeParts;
-			$lastComponent = array_pop($components); // Either controller or view.
-			$secLastComponent = array_pop($components); // Either path or controller.
-			// Anything left over at this point will form part of the path.
-			$controllerPath = implode('/', $components);
-
-			// The two end URL components will either be folder/controller or controller/action.
-			$validControllerView = self::validRoute($controllerPath, $secLastComponent, $lastComponent);
-			$validFolderController = self::validRoute(implode('/', [$controllerPath, $secLastComponent]), $lastComponent);
-
-			if ($validControllerView) {
-				$path = $controllerPath;
-				$controller = $secLastComponent;
-				$action = $lastComponent;
-			} else if ($validFolderController) {
-				$path = implode('/', array_filter([$controllerPath, $secLastComponent]));
-				$controller = $lastComponent;
-				$action = "index";
-			} else {
-				// TODO: An actual solution...
-				throw new \Exception('404');
-			}
+			// TODO: An actual solution... (current stuff is for tests)
+			$this->controllerClassAction = '404';
+			return $this;
+			//throw new \Exception('404');
 		}
 
-		$this->path = $path;
-		$this->controller = $controller;
-		$this->action = $action;
-
-		$this->controllerClass = sprintf("\\ClanApp\\controllers\\%s%sController", strlen($path) > 0 ? "$path\\" : "", ucfirst($controller));
+		$this->controllerClass = sprintf("\\ClanApp\\controllers\\%s%sController", strlen($this->path) > 0 ? "{$this->path}\\" : "", ucfirst($this->controller));
 		$this->controllerClassAction = "{$this->controllerClass}::{$this->action}";
 
 		return $this;
@@ -130,7 +97,7 @@ class Router {
 	 * @param null $action
 	 * @return bool True if the folder/controller/action is found; false otherwise.
 	 */
-	private static function validRoute($path = "", $name = null, $action = null) {
+	private static function isValidRoute($path = "", $name = null, $action = null) {
 
 		if (!$name) {
 			throw new \InvalidArgumentException('Controller name required');

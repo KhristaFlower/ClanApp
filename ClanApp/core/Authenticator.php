@@ -12,7 +12,7 @@ class Authenticator {
 		if (!isset($sessionData['key'])) {
 
 			// Redirect to login if we aren't there already.
-			if (Router::getInstance()->getControllerName() != 'login') {
+			if (Router::getInstance()->controller != 'login') {
 //				Router::redirect('login');
 			}
 
